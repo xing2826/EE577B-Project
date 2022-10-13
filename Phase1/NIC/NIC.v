@@ -1,0 +1,7 @@
+
+
+module NIC (
+    ports
+);
+    
+endmodule
