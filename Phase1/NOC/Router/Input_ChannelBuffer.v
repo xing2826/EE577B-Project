@@ -1,4 +1,4 @@
-// Internal chanel buffer design
+// Input chanel buffer design
 // 64-bit regesiter with synchronous write port
 
 module Input_ChannelBuffer (
