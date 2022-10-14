@@ -1,0 +1,33 @@
+`timescale 1ns/1ps
+
+module tb;
+  reg clk, reset, WE;
+  reg [63:0] di;
+  wire request, ToPE;
+  wire [63:0] packet;
+  
+
+  always #2 clk =!clk;  //runing in 250MHz
+
+  Input_ChannelBuffer tb (clk, reset, di, WE, packet, request, ToPE);
+
+  initial begin
+    $dumpfile("dump.vcd"); $dumpvars;
+
+    //$monitor("at time:%gns, money is %b, price is %b", $time, money, price, );
+    clk = 0; reset = 1; WE = 0; di = 64'h11ffffff;
+    #10;
+    reset = 0; WE = 1;
+    #8;
+    WE = 0; di = 64'h11ffff00;
+    #8;
+    WE = 1;
+    #8;
+    WE = 0; di = 64'h10ff1111;
+    #8;
+    WE = 1;
+    #8;
+
+    $finish;
+  end
+endmodule
