@@ -10,6 +10,7 @@ module Input_ChannelBuffer (
   output reg request,  //request for grant
   output reg ToPE //if the packet is decoded and found with hop value of 0, then ToPE changes to 1;
 );
+
   always @ (posedge clk) begin
     if (reset) 
     packet <= 64'b0;
@@ -18,13 +19,15 @@ module Input_ChannelBuffer (
   end
 
   always @ (packet) begin
-    if (|packet == 1) 
+    if (|packet == 1) begin
       request <= 1; // blocking or non-blocking here?
+      if (packet[55:48] == 8'h00)
+        ToPE <= 1; //same as above, blcoking or non-blocking?
+      else
+        ToPE <= 0;
+    end
     else if (|packet == 0)
       request <= 0;
-    if (packet[55:48] == 8'h0)
-      ToPE <= 1; //same as above, blcoking or non-blocking?
-    else ToPE <= 0;
       
   end
 endmodule
