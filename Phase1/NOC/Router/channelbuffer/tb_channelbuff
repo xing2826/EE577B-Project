@@ -27,6 +27,10 @@ module tb;
     #8;
     WE = 1;
     #8;
+    WE = 0; di = 64'h00000000;
+    #8;
+    WE = 1;
+    #8;
 
     $finish;
   end
