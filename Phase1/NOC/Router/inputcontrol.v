@@ -1,78 +1,17 @@
-module input_control(
-   input clk,
-   input reset,
-   input si,
-   input [63:0] di,
-   input state,
-   output reg ri,
-   output reg vc_req_1,
-   output reg vc_req_2,
-   output reg vc_2p_1,
-   output reg vc_2p_2,
-   output reg [63:0] vc_up_1,
-   output reg [63:0] vc_up_2
-    );
+module router(
+  	input clk,
+   	input reset,
   
-  parameter state_even = 1'b1;
-  parameter state_odd = 1'b0;
+	input cwsi,
+  	input [63:0] cwdi,
+	output cwri,
   
-  reg [63:0] vc_1;
-  reg [63:0] vc_2;
-
-  reg vc_r1;
-  reg vc_r2;
+  	input ccwsi,
+  	input [63:0] ccwdi,
+  	output ccwri,
   
-  always @(posedge clk) begin
-    if(reset) begin
-      vc_r1 <= 1;
-       vc_r2 <= 1;
-    end
-  end
-  
-  always @(*) begin
-    case(state)
-      state_odd: begin 
-        ri = vc_r1;
-        if(si == 1) begin
-         vc_1 = di;
-           vc_r1 = 1'b0;
-           
-        end
-      end
-      state_even: begin
-        ri = vc_r2;
-        if(si == 1) begin
-           vc_2 = di;
-           vc_r2 = 1'b0;
-        end
-      end
-    endcase
-  end
-  
-  always @(*) begin
-    if(|vc_1)begin
-      if(vc_1[55:48] == 8'd0) begin
-        vc_2p_1 = 1'b1;
-       vc_up_1 = vc_1;
-      end
-      else begin
-        vc_up_1 = {vc_1[63:56], 1'b0, vc_1[55:49], vc_1[47:0]};
-        vc_req_1 = 1'b1;
-      end
-    end
-    if(|vc_2)begin
-      if(vc_2[55:48] == 8'd0) begin
-        vc_2p_2 = 1'b1;
-        vc_up_2 = vc_2;
-      else begin
-        vc_up_2 = {vc_2[63:56], 1'b0, vc_2[55:49], vc_2[47:0]};
-        vc_req_2 = 1'b1;
-      end
-    end
-  end
-endmodule
-
-module router()
+);
+  //state translation and output generation
   parameter state_even = 1'b1;
   parameter state_odd = 1'b0;
   
@@ -82,7 +21,7 @@ module router()
     if(reset) begin
         state <= state_odd;
     end
-  else state <= ~state;
+ 	else state <= ~state;
   end
   
   always @(*) begin
@@ -90,12 +29,66 @@ module router()
       state_odd: polarity = 1'b0;
       state_even: polarity = 1'b1;
     endcase
+    
+// cw input control
+    wire cw_flag_vc1;
+    wire cw_flag_vc2;
+    wire cw_vc_req_1;
+    wire cw_vc_req_2;
+    wire cw_vc_2p_1;
+    wire cw_vc_2p_1;
+    wire cw_vc_up_1;
+    wire cw_vc_up_2;
+    
+    input_control cw(
+    	.clk(clk),
+    	.reset(reset),
+      	.si(cwsi),
+      	.di(cwdi),
+    	.state(state),
+      	.flag_vc1(cw_flag_vc1),
+      	.flag_vc2(cw_flag_vc2),
+      	.ri(cwri),
+      	.vc_req_1(cw_vc_req_1),
+      	.vc_req_2(cw_vc_req_2),
+      	.vc_2p_1(cw_vc_2p_1),
+      	.vc_2p_2(cw_vc_2p_2),
+      	.vc_up_1(cw_vc_up_1),
+      	.vc_up_2(cw_vc_up_2));
+    
+    wire ccw_flag_vc1;
+    wire ccw_flag_vc2;
+    wire ccw_vc_req_1;
+    wire ccw_vc_req_2;
+    wire ccw_vc_2p_1;
+    wire ccw_vc_2p_1;
+    wire ccw_vc_up_1;
+    wire ccw_vc_up_2;
+    
+    input_control ccw(
+    	.clk(clk),
+    	.reset(reset),
+      	.si(ccwsi),
+      	.di(ccwdi),
+    	.state(state),
+      	.flag_vc1(ccw_flag_vc1),
+      	.flag_vc2(ccw_flag_vc2),
+      	.ri(ccwri),
+      	.vc_req_1(ccw_vc_req_1),
+      	.vc_req_2(ccw_vc_req_2),
+      	.vc_2p_1(ccw_vc_2p_1),
+      	.vc_2p_2(ccw_vc_2p_2),
+      	.vc_up_1(ccw_vc_up_1),
+      	.vc_up_2(ccw_vc_up_2));
+    
+  
   
 endmodule
 
 
-
-module arbiter(
+    
+    
+    module arbiter(
       input state;
       input clk,
       input reset,
@@ -118,20 +111,20 @@ module arbiter(
 
       wire [1:0] vc_1_req = {vc_1_req2, vc_1_req1};
       wire [3:0] vc_1_double_req = {vc_1_req, vc_1_req};
-      reg [3;0] vc_1_double_grant;
+      wire [3;0] vc_1_double_grant;
       assign vc_1_double_grant = vc_1_double_req &(~(vc_1_double_req - vc_1_valiable_priority));
       assign vc_1_grant = vc_1_double_grant[3:2] & vc_1_double_grant[1:0];
       
       wire [1:0] vc_2_req = {vc_2_req2, vc_2_req1};
       wire [3:0] vc_2_double_req = {vc_2_req, vc_2_req};
-      reg [3;0] vc_2_double_grant;
+      wire [3;0] vc_2_double_grant;
       assign vc_2_double_grant = vc_2_double_req &(~(vc_2_double_req - vc_2_valiable_priority));
       assign vc_2_grant = vc_2_double_grant[3:2] & vc_2_double_grant[1:0];
       
       always @(posedge clk) begin
         if(reset) begin
-          vc_1_valiable_priority <= 2'b0001;
-          vc_2_valiable_priority <= 2'b0001;
+          vc_1_valiable_priority <= 2'b01;
+          vc_2_valiable_priority <= 2'b01;
         end
         else begin
           case(state)
