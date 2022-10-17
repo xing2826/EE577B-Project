@@ -1,6 +1,3 @@
-//the module shown in ''2022fall_cardinal_router.pdf' figure 3 
-//containing 4 RTR and 2 PER modules.
-
 // Code your design here
 // Code your design here
 
@@ -37,10 +34,6 @@ module input_control(
     if(reset) begin
      	vc_r1 <= 1;
       	vc_r2 <= 1;
-      	vc_req_1 <= 0;
-      vc_req_2 <= 0;
-      vc_2p_1 <= 0;
-      vc_2p_2 <= 0;
     end
   end
   
@@ -141,10 +134,6 @@ module input_control_processor(
     if(reset) begin
      	vc_r1 <= 1;
       	vc_r2 <= 1;
-      vc_req_cw_1 <= 0;
-      vc_req_cw_2 <= 0;
-      vc_req_ccw_1 <= 0;
-      vc_req_ccw_2 <= 0;
     end
   end
   
@@ -162,7 +151,7 @@ module input_control_processor(
       if(flag_req_cw_vc2 == 1) vc_req_cw_2 = 0;
       else vc_req_ccw_2 = 0;      
     end
-
+       
     case(state)
       state_odd: begin 
         ri = vc_r1;
@@ -463,7 +452,7 @@ module router(
       .vc_1_req1(p_vc_req_cw_1),
       .vc_1_req2(cw_vc_req_1), 
       .vc_2_req1(p_vc_req_cw_2), 
-      .vc_2_req2(cw_vc_req_2), 
+      .vc_2_req2(cw_vc_req_1), 
       .vc_1_req_buffer_1(p_vc_up_1), 
       .vc_1_req_buffer_2(cw_vc_up_1), 
       .vc_2_req_buffer_1(p_vc_up_2), 
@@ -489,7 +478,7 @@ module router(
       .vc_1_req1(p_vc_req_ccw_1),
       .vc_1_req2(ccw_vc_req_1), 
       .vc_2_req1(p_vc_req_ccw_2), 
-      .vc_2_req2(ccw_vc_req_2), 
+      .vc_2_req2(ccw_vc_req_1), 
       .vc_1_req_buffer_1(p_vc_up_1), 
       .vc_1_req_buffer_2(ccw_vc_up_1), 
       .vc_2_req_buffer_1(p_vc_up_2), 
@@ -699,5 +688,3 @@ router node4 (
 );
 
 endmodule
-    
-    
