@@ -1,6 +1,5 @@
-//the ring structual of the router, consisted by 4 gold_router modules. 
-//the ring connnects to 4 processors so that they can communicate through the ring router.
-
+//the module shown in ''2022fall_cardinal_router.pdf' figure 3 
+//containing 4 RTR and 2 PER modules.
 parameter state_even = 2'b01;
 parameter state_odd = 2'b10;
 parameter state_idle = 2'b00;
@@ -706,3 +705,5 @@ module ring (
     );
 
 endmodule
+    
+    

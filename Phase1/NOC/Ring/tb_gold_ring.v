@@ -1,37 +1,37 @@
 module tb_ring();
-  	reg clk;
-    reg reset;
+  reg clk;
+  reg reset;
 
-    reg net_so1;
+  reg net_so1;
   reg [63:0] net_do1;
-    reg net_ri1;
-    wire net_si1;
-    wire net_ro1;
-    wire net_ploarity1;
+  reg net_ri1;
+  wire net_si1;
+  wire net_ro1;
+  wire net_ploarity1;
   wire [63:0] net_di1;
 
-    reg net_so2;
+  reg net_so2;
   reg [63:0] net_do2;
-    reg net_ri2;
-    wire net_si2;
-    wire net_ro2;
-    wire net_ploarity2;
+  reg net_ri2;
+  wire net_si2;
+  wire net_ro2;
+  wire net_ploarity2;
   wire [63:0] net_di2;
 
-    reg net_so3;
+  reg net_so3;
   reg [63:0] net_do3;
-    reg net_ri3;
-    wire net_si3;
-    wire net_ro3;
-    wire net_ploarity3;
+  reg net_ri3;
+  wire net_si3;
+  wire net_ro3;
+  wire net_ploarity3;
   wire [63:0] net_di3;
 
-    reg net_so4;
+  reg net_so4;
   reg [63:0] net_do4;
-    reg net_ri4;
-    wire net_si4;
-    wire net_ro4;
-    wire net_ploarity4;
+  reg net_ri4;
+  wire net_si4;
+  wire net_ro4;
+  wire net_ploarity4;
   wire [63:0] net_di4;
 	
   ring dut_ring(
@@ -77,7 +77,6 @@ module tb_ring();
     net_ri2 <= 1;
     net_ri3 <= 1;
     net_ri4 <= 1;
-
     #8;
     reset <= 0;
   end
@@ -92,8 +91,6 @@ module tb_ring();
     net_so1 <=0;
     #64;
     $finish();
-    
-   
   end
   
   initial begin
